@@ -125,32 +125,12 @@ require 'capybara/rails'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-#Capybara.register_driver :selenium_local do |app|
-#Capybara::Selenium::Driver.new(app, :browser => :chrome, :desired_capabilities => {
-#"chromeOptions" => { "args" => %w{ window-size=1280,960 } }
-##"chromeOptions" => {"args" => ["--start-maximized", "--headless", "--disable-gpu"] }
-#})
-#end
-#Capybara.javascript_driver = :selenium_local
-
-#docker_ip = %x(/sbin/ip route|awk '/default/ { print $3 }').strip
-
-#cap = Selenium::WebDriver::Remote::Capabilities.chrome "chromeOptions" => {"args" => ["--start-maximized", "--headless", "--disable-gpu"] }
-#Capybara.register_driver :selenium_remote do |app|
-  #Capybara::Selenium::Driver.new(
-    #app,
-    #browser: :remote,
-    #url: "http://selenium-chrome:4444/wd/hub",
-    #desired_capabilities: cap)
-#end
-#Capybara.javascript_driver = :selenium_remote
-
-#Capybara.app_host = "http://#{docker_ip}:3010"
-#Capybara.server_host = '0.0.0.0'
-#Capybara.server_port = '3010'
-
 # use container's shell to find the docker ip address
 docker_ip = %x(/sbin/ip route|awk '/default/ { print $3 }').strip
+
+puts "================================="
+puts ENV['SELENIUM_PORT']
+puts "================================="
 
 Capybara.register_driver :selenium_chrome do |app|
   Capybara::Selenium::Driver.new(app,
@@ -159,7 +139,7 @@ Capybara.register_driver :selenium_chrome do |app|
   :desired_capabilities => :chrome)
 end
 
-Capybara.app_host = "http://#{docker_ip}:3010"
+Capybara.app_host = "http://#{docker_ip}:#{ENV['TEST_APP_PORT']}"
 Capybara.server_host = '0.0.0.0'
 Capybara.server_port = '3010'
 Capybara.run_server = true
@@ -168,7 +148,7 @@ Capybara.javascript_driver = :selenium_chrome
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  #config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -195,9 +175,6 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include Rails.application.routes.url_helpers
-
-config.before(:each) do
-  end
 end
 
 
