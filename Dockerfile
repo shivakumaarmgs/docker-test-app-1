@@ -13,3 +13,7 @@ ADD Gemfile /myapp/Gemfile
 RUN bundle install --jobs=4
 
 ADD . /myapp
+
+EXPOSE 3000
+
+EXPOSE 3010

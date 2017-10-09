@@ -9,18 +9,13 @@ services:
     logging:
       driver: "none"
   web:
-    build: .
-    #image: shivakumaarmgs/ruby2.1.2-test:v3
-    command: bundle exec rspec spec/features
-    #command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    ports:
-      - "3000:3000"
-      - "3010:3010"
+    image: shivakumaarmgs/ruby2.1.2-test:v4
+    command: /myapp/test.sh
     environment:
       - TEST_APP_PORT=3010
       - SELENIUM_PORT=4444
     entrypoint:
-      - bin/entry
+      - /myapp/entry.sh
     depends_on:
       - db
       - selenium
