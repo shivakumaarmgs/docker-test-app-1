@@ -18,22 +18,22 @@ found at [Dockerfile](https://github.com/shivakumaarmgs/docker-test-app-1/blob/m
 3. selenium/standalone-chrome  
 [https://hub.docker.com/r/selenium/standalone-chrome/](https://hub.docker.com/r/selenium/standalone-chrome/)
 
-## To run the application
+## To build the application
 ```
-docker-compose run --rm web rake db:create
-docker-compose run --rm web rake db:migrate
-docker-compose up
+docker-compose build
 ```
-This pulls all the images and start the server in development mode. You can visit
-`http://localhost:3000` to view the sample root page.
+This pulls all the necessary images and prepares your container.
+It doesn't start the development server.
 
 ### To run the tests
 ```
-docker-compose run --rm web rspec spec/models
-docker-compose run --rm --service-ports web rspec spec/features
+docker-compose up --exit-code-from web
 ```
-These commands will run the model and feature specs. While running feature specs
-`--service-ports` is really important.
+These commands will create the database if needed and migrate the database. Then
+it runs the tests. Please look at `entry.sh` and `test.sh` for more details. In
+test.sh we wait till the mysql service is up and running. Its implemeted based
+on these links [startup-order](https://docs.docker.com/compose/startup-order/)
+and [docker-compose-wait-for-dependencies](https://8thlight.com/blog/dariusz-pasciak/2016/10/17/docker-compose-wait-for-dependencies.html)
 
 #### Capybara configuration
 Capybara is configured to run tests on a selenium remote machine which is
